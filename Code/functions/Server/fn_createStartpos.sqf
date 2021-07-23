@@ -1,7 +1,11 @@
-// Build start position
+ // Build start position
 private _fenceRotateDir = random 360;
 
-private _backPack = (selectRandom (missionNamespace getVariable ["a3e_arr_PrisonBackpacks", ["B_AssaultPack_khk"]])) createvehicle A3E_StartPos;
+// adding the second _backPack to the line below addes arsenal to the spawned sack
+private _backPack = "Box_FIA_Wps_F" createvehicle A3E_StartPos; _backPack addAction ["<t color='#ff1111'>BIS Arsenal</t>", {["Open",true] call BIS_fnc_arsenal}];
+// add this to live above if current does not work -> _backPack addAction ["<t color='#ff1111'>BIS Arsenal</t>", {["Open",true] call BIS_fnc_arsenal}];
+
+
 
 private _template = selectRandom(["a3e_fnc_BuildPrison", "a3e_fnc_BuildPrison1", "a3e_fnc_BuildPrison2", "a3e_fnc_BuildPrison3", "a3e_fnc_BuildPrison4", "a3e_fnc_BuildPrison5"]);
 
