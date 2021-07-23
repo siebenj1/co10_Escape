@@ -12,8 +12,8 @@ call a3e_fnc_parameterInit;
 call compile preprocessFileLineNumbers "Scripts\Escape\Functions.sqf";
 call compile preprocessFileLineNumbers "Scripts\Escape\AIskills.sqf";
 
-if(!isNil("A3E_Param_Debug")) then {
-	if((A3E_Param_Debug)==0 && !(missionNamespace getVariable ["a3e_debug_overwrite",false])) then {
+if(!isNil("Param_Debug")) then {
+	if((Param_Debug)==0 && !(missionNamespace getVariable ["a3e_debug_overwrite",false])) then {
 		A3E_Debug = false;
 	} else {
 		A3E_Debug = true;
@@ -26,7 +26,7 @@ if(!isNil("A3E_Param_Debug")) then {
 publicVariable "A3E_Debug";
 
 //ACE Revive
-AT_Revive_Camera = A3E_Param_ReviveView; //Needs to be stored on server now
+AT_Revive_Camera = Param_ReviveView; //Needs to be stored on server now
 ACE_MedicalServer = false;
 if (isClass(configFile >> "CfgPatches" >> "ACE_Medical")) then {
 	ACE_MedicalServer = true;
@@ -45,8 +45,8 @@ publicVariable "ACE_MedicalServer";
 
 private ["_villagePatrolSpawnArea","_EnemyCount","_enemyMinSkill", "_enemyMaxSkill", "_searchChopperSearchTimeMin", "_searchChopperRefuelTimeMin", "_enemySpawnDistance", "_playerGroup", "_enemyFrequency", "_scriptHandle"];
 
-_enemyFrequency = (A3E_Param_EnemyFrequency);
-_enemySpawnDistance = (A3E_Param_EnemySpawnDistance);
+_enemyFrequency = (Param_EnemyFrequency);
+_enemySpawnDistance = (Param_EnemySpawnDistance);
 
 [_enemyFrequency] call compile preprocessFileLineNumbers "Units\UnitClasses.sqf";
 
@@ -60,8 +60,8 @@ publicVariable "A3E_VAR_Flag_Ind";
 createCenter A3E_VAR_Side_Opfor;
 createCenter A3E_VAR_Side_Ind;
 
-if(isNil("A3E_Param_War_Torn")) then {
-	A3E_Param_War_Torn = 0;
+if(isNil("Param_War_Torn")) then {
+	Param_War_Torn = 0;
 };
 A3E_VAR_Side_Blufor setFriend [A3E_VAR_Side_Ind, 0];
 A3E_VAR_Side_Ind setFriend [A3E_VAR_Side_Blufor, 0];
@@ -69,7 +69,7 @@ A3E_VAR_Side_Ind setFriend [A3E_VAR_Side_Blufor, 0];
 A3E_VAR_Side_Blufor setFriend [A3E_VAR_Side_Opfor, 0];
 A3E_VAR_Side_Opfor setFriend [A3E_VAR_Side_Blufor, 0];
 	
-if(A3E_Param_War_Torn == 0) then {
+if(Param_War_Torn == 0) then {
 	A3E_VAR_Side_Opfor Setfriend [A3E_VAR_Side_Ind, 1];
 	A3E_VAR_Side_Ind setFriend [A3E_VAR_Side_Opfor, 1];
 } else {
@@ -82,8 +82,8 @@ if(A3E_Param_War_Torn == 0) then {
 [] spawn A3E_fnc_weather;
 
 private ["_hour","_date"];
-_hour = A3E_Param_TimeOfDay;
-switch (A3E_Param_TimeOfDay) do {
+_hour = Param_TimeOfDay;
+switch (Param_TimeOfDay) do {
     case 24: { 
 		_hour = round(random(24));
 	};
@@ -94,7 +94,7 @@ switch (A3E_Param_TimeOfDay) do {
 		_hour = 17 + round(random(11)); //Between 1700 and 0400
 		_hour = _hour % 24;
 	};
-    default { _hour = A3E_Param_TimeOfDay };
+    default { _hour = Param_TimeOfDay };
 };
 _date = date;
 _date set [3,_hour];
@@ -106,7 +106,7 @@ publicVariable "a3e_var_Escape_hoursSkipped";
 [_date] call bis_fnc_setDate;
 
 
-setTimeMultiplier A3E_Param_TimeMultiplier;
+setTimeMultiplier Param_TimeMultiplier;
 call compile preprocessFileLineNumbers ("Island\CommunicationCenterMarkers.sqf");
 
 
@@ -119,8 +119,8 @@ publicVariable "a3e_var_Escape_MissionComplete";
 
 a3e_var_GrpNumber = 0;
 
-if(isNil("A3E_Param_EnemySkill")) then {
-	A3E_Param_EnemySkill = 1;
+if(isNil("Param_EnemySkill")) then {
+	Param_EnemySkill = 1;
 };
 
 _enemyMinSkill = 0.40;
@@ -128,7 +128,7 @@ _enemyMaxSkill = 0.60;
 
 //Kudos to Semiconductor
 
-switch (A3E_Param_EnemySkill) do { 
+switch (Param_EnemySkill) do { 
     // Convert value from params.hpp into acceptable range 
     case 0: { _enemyMinSkill = 0.10; _enemyMaxSkill = 0.30; }; 
     case 1: { _enemyMinSkill = 0.30; _enemyMaxSkill = 0.50; }; 
@@ -147,36 +147,23 @@ _searchChopperSearchTimeMin = (5 + random 10);
 _searchChopperRefuelTimeMin = (5 + random 10);
 
 
-_villagePatrolSpawnArea = (A3E_Param_VillageSpawnCount);
+_villagePatrolSpawnArea = (Param_VillageSpawnCount);
 
 drn_searchAreaMarkerName = "drn_searchAreaMarker";
 
-//Getting exclusion zones
-if(isNil("A3E_ExclusionZones")) then {
-  A3E_ExclusionZones = [];
-  {
-    if("A3E_ExclusionZone" in _x && _x != "A3E_ExclusionZone_") then {
-      A3E_ExclusionZones pushback _x;
-	  if(!A3E_Debug) then {_x setMarkerAlpha 0;};
-    };
-  } foreach allMapMarkers;
-};
-
 // Choose a start position
-if(isNil("A3E_ClearedPositionDistance")) then {
-	A3E_ClearedPositionDistance = 500;
-};
 
 A3E_StartPos = [] call a3e_fnc_findFlatArea;
-while {{A3E_StartPos inArea _x} count A3E_ExclusionZones > 0} do {
-	A3E_StartPos = [] call a3e_fnc_findFlatArea;
-};
 publicVariable "A3E_StartPos";
 
 
 A3E_Var_ClearedPositions = [];
 A3E_Var_ClearedPositions pushBack A3E_StartPos;
 A3E_Var_ClearedPositions pushBack (getMarkerPos "drn_insurgentAirfieldMarker");
+
+if(isNil("A3E_ClearedPositionDistance")) then {
+	A3E_ClearedPositionDistance = 500;
+};
 
 private _backpack = [] call A3E_fnc_createStartpos;
 
@@ -201,11 +188,20 @@ _playerGroup = [] call A3E_fnc_GetPlayerGroup;
 _EnemyCount = [3] call A3E_fnc_GetEnemyCount;
 
 [_playerGroup, "drn_CommunicationCenterPatrolMarker", A3E_VAR_Side_Opfor, "INS", 4, _EnemyCount select 0, _EnemyCount select 1, _enemyMinSkill, _enemyMaxSkill, _enemySpawnDistance] call drn_fnc_InitGuardedLocations;
-[_playerGroup, a3e_var_Escape_communicationCenterPositions, _enemySpawnDistance, _enemyFrequency] call drn_fnc_Escape_InitializeComCenArmor;
-
 
 // Initialize Motor Pools
-[] call A3E_fnc_createMotorPools;
+
+private _UseMotorPools = Param_MotorPools;
+    if (_UseMotorPools == 1) then {
+        [] call A3E_fnc_createMotorPool;
+    };
+
+
+// Initialize armor defence at communication centers
+
+
+[_playerGroup, a3e_var_Escape_communicationCenterPositions, _enemySpawnDistance, _enemyFrequency] call drn_fnc_Escape_InitializeComCenArmor;
+
 
 
 // Initialize ammo depots
@@ -227,11 +223,7 @@ _EnemyCount = [3] call A3E_fnc_GetEnemyCount;
 
 
 // Initialize search leader
-//[drn_searchAreaMarkerName, A3E_Debug] execVM "Scripts\Escape\SearchLeader.sqf"; //depreciated
-[] call A3E_fnc_SearchleaderInit;
-
-//Start the player detection script
-[] call A3E_fnc_PlayerDetection;
+[drn_searchAreaMarkerName, A3E_Debug] execVM "Scripts\Escape\SearchLeader.sqf";
 
 // Start garbage collector
 [_playerGroup, 750, A3E_Debug] spawn drn_fnc_CL_RunGarbageCollector;
@@ -490,16 +482,31 @@ _EnemyCount = [3] call A3E_fnc_GetEnemyCount;
 		[_pos] call A3E_fnc_crashSite;
 	};
 
-
+	switch (_enemyFrequency) do
+	{
+	    case 1: // 1-2 players
+	    {
+	        _minEnemiesPerGroup = 2;
+	        _maxEnemiesPerGroup = 4;
+	    };
+	    case 2: // 3-5 players
+	    {
+	        _minEnemiesPerGroup = 3;
+	        _maxEnemiesPerGroup = 6;
+	    };
+	    default // 6-8 players
+	    {
+	        _minEnemiesPerGroup = 4;
+	        _maxEnemiesPerGroup = 8;
+	    };
+	};
+	
+	
+	
 	//Spawn mortar sites
 	[] call A3E_fnc_createMortarSites;
 };
 
-//Start local and remote statistic tracking
-[] spawn {
-	sleep 1;
-	[] call A3E_fnc_startStatistics;
-};
 
 // Create search chopper
 
@@ -515,12 +522,13 @@ waitUntil {scriptDone _scriptHandle};
     
 	 
     // Spawn guard
-	_guardCount = [-1,-1,3,8] call a3e_fnc_getDynamicSquadSize;
+
 	private _i = 0;	
-	for [{_i = 0}, {_i < (_guardCount)}, {_i = _i + 1}] do {
+	for [{_i = 0}, {_i < (Param_EnemyFrequency*2)}, {_i = _i + 1}] do {
 		private _weapon = a3e_arr_PrisonBackpackWeapons select floor(random(count(a3e_arr_PrisonBackpackWeapons)));
 		_backpack addWeaponCargoGlobal[(_weapon select 0),1];
 		_backpack addMagazineCargoGlobal[(_weapon select 1),3];
+
 	};
 	
     // Spawn more guards
@@ -529,7 +537,8 @@ waitUntil {scriptDone _scriptHandle};
     _marker setMarkerShapeLocal "ELLIPSE";
     _marker setMarkerSizeLocal [50, 50];
     
-    //_guardCount = (2 + (_enemyFrequency)) + floor (random 2);
+    _guardCount = 0;
+//(2 + (_enemyFrequency)) + floor (random 2);
 
     _guardGroups = [];
     _createNewGroup = true;
@@ -584,7 +593,7 @@ waitUntil {scriptDone _scriptHandle};
 					};
 				} forEach items _unit;
 			};
-			if (!(_hmd isEqualTo "") && {random 100 > 20 || {A3E_Param_NoNightvision == 1}}) then {
+			if (!(_hmd isEqualTo "") && {random 100 > 20 || {Param_NoNightvision == 1}}) then {
 				_unit unlinkItem _hmd;
 				_unit removeItem _hmd;
 			};
@@ -697,3 +706,4 @@ waitUntil {scriptDone _scriptHandle};
 		} foreach call A3E_fnc_GetPlayers;
 	};
 };
+
