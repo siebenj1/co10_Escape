@@ -6,8 +6,8 @@ _trigger = createTrigger["EmptyDetector", [0,0,0]];
 _trigger setTriggerInterval 2;
 _trigger setTriggerArea[25, 25, 0, false];
 _trigger setTriggerActivation["NONE", "PRESENT", true];
-_trigger setTriggerStatements["A3E_SoundPrisonAlarm", "thisTrigger setposASL ((getposASL A3E_PrisonLoudspeakerObject) vectorAdd [0,0,4]);", ""];
-_trigger setSoundEffect ["$NONE$", "", "", "AlarmSfx"];
+//_trigger setTriggerStatements["A3E_SoundPrisonAlarm", "thisTrigger setposASL ((getposASL A3E_PrisonLoudspeakerObject) vectorAdd [0,0,4]);", ""];
+//_trigger setSoundEffect ["$NONE$", "", "", "AlarmSfx"];
 	
 	//All players are unconscious
 
@@ -25,11 +25,11 @@ _trigger setTriggerStatements["!isDedicated && a3e_var_Escape_AllPlayersDead || 
 
 
 // Task escape the prison
-A3E_Task_Prison = player createSimpleTask ["Escape the prison"];
+A3E_Task_Prison = player createSimpleTask ["Mission start: Step off"];
 A3E_Task_Prison setSimpleTaskDescription [
-   "Your squad is being held in an improvised prison waiting for enemy special forces to pick you up for questioning. Local resistance has hidden a backpack  with pistols somewhere in the prison. Arm yourself and escape the prison!",
-   "Escape the prison",
-   "Escape the prison"
+   "Your squad is behind enemy lines and has been collecting intel on key points of interest. Your Primary objective is locate an Enemy commcenter and gain access to their network and steal as much intellegence as possible and extract the AOE. Use the Cache to equip yourselves as needed.",
+   "Mission start: Step off",
+   "Mission start: Step off"
 ];
 A3E_Task_Prison setTaskState "CREATED";
 
