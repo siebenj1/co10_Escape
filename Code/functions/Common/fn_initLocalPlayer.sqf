@@ -26,13 +26,13 @@ AT_Revive_Camera = 1;
 
 [] call A3E_fnc_addUserActions;
 
-removeAllAssignedItems player;
-removeAllWeapons player;
-removeAllItems player;
-removeBackpack player;
-removeVest player;
-removeHeadgear player;
-removeGoggles player;
+//removeAllAssignedItems player;
+//removeAllWeapons player;
+//removeAllItems player;
+//removeBackpack player;
+//removeVest player;
+//removeHeadgear player;
+//removeGoggles player;
 if(hmd player != "") then {
 	private _hmd = hmd player;
 	player unlinkItem _hmd;
